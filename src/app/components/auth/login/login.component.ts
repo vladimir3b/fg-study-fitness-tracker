@@ -1,4 +1,6 @@
+// Adding angular elements
 import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'fg-login',
@@ -7,9 +9,25 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LoginComponent implements OnInit {
 
+  // Properties
+  public loginForm: FormGroup;
+
+  // Class Constructor
   constructor() { }
 
-  ngOnInit() {
+  // Life Cycles Hooks
+  public ngOnInit(): void {
+    this.loginForm = new FormGroup({
+      'email': new FormControl(null, [ 
+        Validators.required, 
+        Validators.email
+      ]),
+      'password': new FormControl(null, Validators.required)
+    });
   }
 
+  // Methods
+  public onSubmit(): void {
+    console.log(this.loginForm);
+  }
 }
