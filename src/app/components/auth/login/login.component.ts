@@ -15,7 +15,7 @@ export class LoginComponent implements OnInit {
   // Class Constructor
   constructor() { }
 
-  // Life Cycles Hooks
+  // Class Constructor
   public ngOnInit(): void {
     this.loginForm = new FormGroup({
       'email': new FormControl(null, [ 

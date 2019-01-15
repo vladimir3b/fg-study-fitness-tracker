@@ -7,9 +7,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class RootComponent implements OnInit {
 
+  // Class Constructor
   constructor() { }
 
+  // Class Constructor
   ngOnInit() {
+  }
+
+  // Methods
+  public onToggle(): void {
+    
   }
 
 }

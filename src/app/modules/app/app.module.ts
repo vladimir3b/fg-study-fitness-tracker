@@ -16,6 +16,8 @@ import { NewTrainingComponent } from '../../components/training/new-training/new
 import { PastTrainingsComponent } from '../../components/training/past-trainings/past-trainings.component';
 import { WelcomeComponent } from '../../components/welcome/welcome.component';
 import { RoutingModule } from './../routing/routing.module';
+import { HeaderComponent } from '../../components/navigation/header/header.component';
+import { SidenavListComponent } from '../../components/navigation/sidenav-list/sidenav-list.component';
 
 
 
@@ -28,7 +30,9 @@ import { RoutingModule } from './../routing/routing.module';
     CurrentTrainingComponent,
     NewTrainingComponent,
     PastTrainingsComponent,
-    WelcomeComponent
+    WelcomeComponent,
+    HeaderComponent,
+    SidenavListComponent
   ],
   imports: [
     BrowserModule,

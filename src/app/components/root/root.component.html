@@ -1,1 +1,13 @@
-<router-outlet></router-outlet>
+<mat-sidenav-container>
+  <mat-sidenav 
+      role="navigation"
+      #sidenav>
+    <fg-sidenav-list></fg-sidenav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <fg-header></fg-header>
+    <main>
+      <router-outlet></router-outlet>
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>
