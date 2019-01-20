@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'fg-sidenav-list',
@@ -7,9 +7,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SidenavListComponent implements OnInit {
 
-  constructor() { }
+  @Output() public closeSidenav: EventEmitter<void>;
+
+  constructor() { 
+    this.closeSidenav = new EventEmitter();
+  }
 
   ngOnInit() {
+  }
+
+  public onSidenavClose(): void {
+    this.closeSidenav.emit();
   }
 
 }

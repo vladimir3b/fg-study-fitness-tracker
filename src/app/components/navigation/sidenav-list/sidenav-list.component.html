@@ -1,20 +1,20 @@
 <mat-nav-list>
   <a 
-      (click)="sidenav.close()"
+      (click)="onSidenavClose()"
       mat-list-item 
       routerLink="/signup">
     <mat-icon>perm_identity</mat-icon>
     <span class="nav-caption">Signup</span>
   </a>
   <a 
-      (click)="sidenav.close()"
+      (click)="onSidenavClose()"
       mat-list-item 
       routerLink="/login">
     <mat-icon>input</mat-icon>
     <span class="nav-caption">Login</span>
   </a>
   <a 
-      (click)="sidenav.close()"
+      (click)="onSidenavClose()"
       mat-list-item 
       routerLink="/training">
     <mat-icon>fitness_center</mat-icon>
@@ -22,7 +22,7 @@
   </a>
   <mat-list-item>
     <button 
-        (click)="sidenav.close()"
+        (click)="onSidenavClose()"
         mat-icon-button>
       <mat-icon>power_settings_new</mat-icon>
       <span class="nav-caption">Logout</span>

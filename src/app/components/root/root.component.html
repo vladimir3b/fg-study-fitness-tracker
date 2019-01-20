@@ -2,10 +2,10 @@
   <mat-sidenav 
       role="navigation"
       #sidenav>
-    <fg-sidenav-list></fg-sidenav-list>
+    <fg-sidenav-list (closeSidenav)="sidenav.close()"></fg-sidenav-list>
   </mat-sidenav>
   <mat-sidenav-content>
-    <fg-header></fg-header>
+    <fg-header (sidenavToggle)="sidenav.toggle()"></fg-header>
     <main>
       <router-outlet></router-outlet>
     </main>

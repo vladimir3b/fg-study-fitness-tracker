@@ -12,14 +12,16 @@ import {
 })
 export class HeaderComponent implements OnInit {
 
-  sidenavToggle = new EventEmitter
+  @Output() public sidenavToggle: EventEmitter<void>; 
 
-  constructor() { }
+  constructor() { 
+    this.sidenavToggle = new EventEmitter();
+  }
 
   ngOnInit() {
   }
 
   public onToggleSidenav(): void {
-
+    this.sidenavToggle.emit();
   }
 }
