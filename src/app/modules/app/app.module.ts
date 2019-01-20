@@ -18,6 +18,7 @@ import { WelcomeComponent } from '../../components/welcome/welcome.component';
 import { RoutingModule } from './../routing/routing.module';
 import { HeaderComponent } from '../../components/navigation/header/header.component';
 import { SidenavListComponent } from '../../components/navigation/sidenav-list/sidenav-list.component';
+import { StopTrainingComponent } from '../../components/training/stop-training/stop-training.component';
 
 
 
@@ -32,7 +33,8 @@ import { SidenavListComponent } from '../../components/navigation/sidenav-list/s
     PastTrainingsComponent,
     WelcomeComponent,
     HeaderComponent,
-    SidenavListComponent
+    SidenavListComponent,
+    StopTrainingComponent
   ],
   imports: [
     BrowserModule,
@@ -46,6 +48,9 @@ import { SidenavListComponent } from '../../components/navigation/sidenav-list/s
   providers: [],
   bootstrap: [
     RootComponent
+  ],
+  entryComponents: [
+    StopTrainingComponent
   ]
 })
 export class AppModule { }
