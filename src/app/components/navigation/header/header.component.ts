@@ -1,8 +1,8 @@
-import { 
-  Component, 
-  OnInit, 
-  EventEmitter, 
-  Output 
+import {
+  Component,
+  OnInit,
+  EventEmitter,
+  Output
 } from '@angular/core';
 
 @Component({
@@ -12,15 +12,19 @@ import {
 })
 export class HeaderComponent implements OnInit {
 
-  @Output() public sidenavToggle: EventEmitter<void>; 
+  // Properties
+  @Output() public sidenavToggle: EventEmitter<void>;
 
-  constructor() { 
+  // Class constructor
+  constructor() {
     this.sidenavToggle = new EventEmitter();
   }
 
+  // Life-cycle hooks
   ngOnInit() {
   }
 
+  // Methods
   public onToggleSidenav(): void {
     this.sidenavToggle.emit();
   }

@@ -7,9 +7,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PastTrainingsComponent implements OnInit {
 
+  // Class Constructor
   constructor() { }
 
+  // Life-cycle hooks
   ngOnInit() {
   }
 
 }
+

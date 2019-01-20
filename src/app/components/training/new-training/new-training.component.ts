@@ -1,4 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  EventEmitter,
+  Output
+} from '@angular/core';
 
 @Component({
   selector: 'fg-new-training',
@@ -7,9 +12,21 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NewTrainingComponent implements OnInit {
 
-  constructor() { }
+  // Properties
+  @Output() public startTraining: EventEmitter<void>;
 
+  // Class Constructor
+  constructor() {
+    this.startTraining = new EventEmitter();
+  }
+
+  // Life-cycle hooks
   ngOnInit() {
+  }
+
+  // Methods
+  public onStartTraining(): void {
+    this.startTraining.emit();
   }
 
 }

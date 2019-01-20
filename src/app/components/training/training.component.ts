@@ -7,8 +7,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TrainingComponent implements OnInit {
 
-  constructor() { }
+  // Properties
+  public ongoingTraining: boolean;
 
+  // Class Constructor
+  constructor() {
+    this.ongoingTraining = false;
+  }
+
+  // Life-cycle hooks
   ngOnInit() {
   }
 

@@ -10,13 +10,13 @@ export class RootComponent implements OnInit {
   // Class Constructor
   constructor() { }
 
-  // Class Constructor
+  // Life-cycle hooks
   ngOnInit() {
   }
 
   // Methods
   public onToggle(): void {
-    
+
   }
 
 }
