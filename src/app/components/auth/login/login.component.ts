@@ -1,6 +1,7 @@
-// Adding angular elements
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'fg-login',
@@ -13,7 +14,7 @@ export class LoginComponent implements OnInit {
   public loginForm: FormGroup;
 
   // Class Constructor
-  constructor() { }
+  constructor(private authService: AuthService) { }
 
   // Life-cycle hooks
   public ngOnInit(): void {
@@ -28,6 +29,9 @@ export class LoginComponent implements OnInit {
 
   // Methods
   public onSubmit(): void {
-    console.log(this.loginForm);
+    this.authService.login({
+      email: this.loginForm.value.email,
+      password: this.loginForm.value.password
+    });
   }
 }

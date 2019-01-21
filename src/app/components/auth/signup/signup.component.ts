@@ -1,6 +1,7 @@
-// Adding angular elements
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
+
+import { AuthService } from './../../../services/auth.service';
 
 
 @Component({
@@ -14,7 +15,7 @@ export class SignupComponent implements OnInit {
   public maximumDate: Date;
 
   // Class Constructor
-  constructor() { }
+  constructor(private authService: AuthService) { }
 
   // Life-cycle Hooks
   public ngOnInit(): void {
@@ -24,7 +25,10 @@ export class SignupComponent implements OnInit {
 
   // Methods
   public onSubmit(form: NgForm): void {
-    console.log(form);
+    this.authService.registerUser({
+      email: form.value.email,
+      password: form.value.password
+    });
   }
 
 }
