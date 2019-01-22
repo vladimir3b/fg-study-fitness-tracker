@@ -7,6 +7,7 @@ import { WelcomeComponent } from './../../components/welcome/welcome.component';
 import { TrainingComponent } from './../../components/training/training.component';
 import { LoginComponent } from './../../components/auth/login/login.component';
 import { SignupComponent } from './../../components/auth/signup/signup.component';
+import { AuthGuardService } from './../../services/auth-guard.service';
 
 const ROUTES: Routes = [
   {
@@ -23,7 +24,8 @@ const ROUTES: Routes = [
   },
   {
     path: 'training',
-    component: TrainingComponent
+    component: TrainingComponent,
+    canActivate: [ AuthGuardService ]
   }
 ];
 
@@ -32,8 +34,7 @@ const ROUTES: Routes = [
   imports: [
     RouterModule.forRoot(ROUTES)
   ],
-  exports: [
-    RouterModule
-  ]
+  exports: [ RouterModule ],
+  providers: [ AuthGuardService ]
 })
 export class RoutingModule { }

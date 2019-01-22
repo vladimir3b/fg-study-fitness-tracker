@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 
 import { IUserModel } from '../models/user.model';
 import { IAuthDataModel } from './../models/auth-data.model';
+
 
 
 
@@ -19,17 +21,26 @@ export class AuthService {
   public authChange: Subject<boolean>;
 
   // The constructor
-  constructor() {
+  constructor(private _router: Router) {
     this.authChange = new Subject();
   }
 
   // Methods
+  private _authSuccessfully(token: boolean = true): void {
+    this.authChange.next(token);
+    this._router.navigate([token ? '/training' : '/login']);
+  }
+
+  public isAuth(): boolean {
+    return this._user != null;
+  }
+
   public registerUser(authData: IAuthDataModel): void {
     this._user = {
       email: authData.email,
       userId: Math.round(Math.random() * 1000000).toString()
     };
-    this.authChange.next(true);
+    this._authSuccessfully();
   }
 
   public login(authData: IAuthDataModel): void {
@@ -37,16 +48,12 @@ export class AuthService {
       email: authData.email,
       userId: Math.round(Math.random() * 1000000).toString()
     };
-    this.authChange.next(true);
+    this._authSuccessfully();
   }
 
   public logout(): void {
     this._user = null;
-    this.authChange.next(false);
-  }
-
-  public isAuth(): boolean {
-    return this._user != null;
+    this._authSuccessfully(false);
   }
 
 }

@@ -1,7 +1,10 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialogRef, MatDialog } from '@angular/material';
 
 import { StopTrainingComponent } from './../stop-training/stop-training.component';
+import { TrainingService } from 'src/app/services/training.service';
+import { IExerciseModel } from 'src/app/models/exercise.model';
+
 
 @Component({
   selector: 'fg-current-training',
@@ -11,41 +14,45 @@ import { StopTrainingComponent } from './../stop-training/stop-training.componen
 export class CurrentTrainingComponent implements OnInit {
 
   // Properties
-  @Output() trainingExit: EventEmitter<void>;
+  public currentExercise: IExerciseModel;
   public progress: number;
   public timer: number;
 
   // Class Constructor
-  constructor(private dialog: MatDialog) {
+  constructor(
+      private _dialog: MatDialog,
+      private _trainingService: TrainingService
+  ) {
     this.progress = 0;
-    this.trainingExit = new EventEmitter();
   }
 
   // Life-cycle hooks
-  ngOnInit() {
+  public ngOnInit(): void {
+    this.currentExercise = this._trainingService.currentExercise;
     this.controlTimer();
   }
 
   // Methods
   public controlTimer(): void {
     this.timer = <any>setInterval(() => {
-      this.progress += 10;
+      this.progress += 1;
       if (this.progress >= 100) {
+        this._trainingService.terminateExercise(100);
         clearInterval(this.timer);
       }
-    }, 1000);
+    }, this.currentExercise.duration * 10);
   }
 
   public onStop(): void {
     clearInterval(this.timer);
-    const dialogReference: MatDialogRef<StopTrainingComponent> = this.dialog.open(StopTrainingComponent, {
+    const dialogReference: MatDialogRef<StopTrainingComponent> = this._dialog.open(StopTrainingComponent, {
       data: {
         progress: this.progress
       }
     });
     dialogReference.afterClosed().subscribe((result: boolean) => {
       if (result) {
-        this.trainingExit.emit();
+        this._trainingService.terminateExercise(this.progress);
       } else {
         this.controlTimer();
       }

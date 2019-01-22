@@ -23,14 +23,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
   public isAuth: boolean;
 
   // Class constructor
-  constructor(private authService: AuthService) {
+  constructor(private _authService: AuthService) {
     this.isAuth = false;
     this.sidenavToggle = new EventEmitter();
   }
 
   // Life-cycle hooks
   public ngOnInit(): void {
-    this._subscription = this.authService.authChange.subscribe((authStatus: boolean) => {
+    this._subscription = this._authService.authChange.subscribe((authStatus: boolean) => {
       this.isAuth = authStatus;
     });
   }
@@ -39,9 +39,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this._subscription.unsubscribe();
   }
 
-
   // Methods
   public onToggleSidenav(): void {
     this.sidenavToggle.emit();
   }
+
+  public onLogout(): void {
+    this._authService.logout();
+  }
+
 }

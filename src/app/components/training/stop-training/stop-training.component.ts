@@ -9,7 +9,7 @@ import { MAT_DIALOG_DATA } from '@angular/material';
 export class StopTrainingComponent implements OnInit {
 
   // Class Constructor
-  constructor(@Inject(MAT_DIALOG_DATA) public passedData: { progress: number } ) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public passedData: { progress: number }) { }
 
   // Life-cycle hooks
   ngOnInit() {
