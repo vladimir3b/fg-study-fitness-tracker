@@ -1,3 +1,78 @@
-<p>
-  past-trainings works!
-</p>
+<div fxLayoutAlign="center center">
+  <mat-form-field fxFlex="40%">
+    <input
+        type="text"
+        matInput
+        (keyup)="doFilter($event.target.value)"
+        placeholder="Filter">
+  </mat-form-field>
+</div>
+
+<mat-table
+    matSort
+    [dataSource]="pastExercises">
+
+  <ng-container matColumnDef="date">
+    <mat-header-cell
+        mat-sort-header
+        *matHeaderCellDef>
+      Date
+    </mat-header-cell>
+    <mat-cell *matCellDef="let exercise">
+      {{ exercise.date | date }}
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="name">
+    <mat-header-cell
+        mat-sort-header
+        *matHeaderCellDef>
+      Name
+    </mat-header-cell>
+    <mat-cell *matCellDef="let exercise">
+      {{ exercise.name }}
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="calories">
+    <mat-header-cell
+        mat-sort-header
+        *matHeaderCellDef>
+      Calories
+    </mat-header-cell>
+    <mat-cell *matCellDef="let exercise">
+      {{ exercise.calories | number }}
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="duration">
+    <mat-header-cell
+        mat-sort-header
+        *matHeaderCellDef>
+      Duration
+    </mat-header-cell>
+    <mat-cell *matCellDef="let exercise">
+      {{ exercise.duration | number }}
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="state">
+    <mat-header-cell
+        mat-sort-header
+        *matHeaderCellDef>
+      State
+    </mat-header-cell>
+    <mat-cell *matCellDef="let exercise">
+      {{ exercise.state }}
+    </mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+</mat-table>
+
+<mat-paginator
+    [pageSize]="pageSizeOptions[pageSizeOptionsIndex]"
+    [pageSizeOptions]="pageSizeOptions">
+</mat-paginator>

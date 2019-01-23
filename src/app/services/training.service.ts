@@ -19,6 +19,9 @@ export class TrainingService {
   public get currentExercise(): IExerciseModel {
     return (this._currentExercise) ? { ...this._currentExercise } : null;
   }
+  public get pastExercises(): Array<IExerciseModel> {
+    return [ ...this._pastExercises ];
+  }
 
   // Class constructor
   constructor() {

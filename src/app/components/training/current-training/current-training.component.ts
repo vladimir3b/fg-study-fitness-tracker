@@ -40,7 +40,7 @@ export class CurrentTrainingComponent implements OnInit {
         this._trainingService.terminateExercise(100);
         clearInterval(this.timer);
       }
-    }, this.currentExercise.duration * 10);
+    }, this.currentExercise.duration * 0.5); // modify this to 10 in the final version
   }
 
   public onStop(): void {
