@@ -58,6 +58,14 @@ export class TrainingService {
     this._database
       .collection('pastExercises')
       .valueChanges()
+      .pipe(map((documents: Array<any>) => {
+        return documents.map((document: any) => {
+          return {
+            ...document,
+            date: document.date.toDate()
+          };
+        });
+      }))
       .subscribe((exercises: Array<IExerciseModel>) => {
         this.getPastExercises.next(exercises);
       });

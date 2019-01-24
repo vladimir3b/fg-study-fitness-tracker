@@ -19,7 +19,7 @@
       Date
     </mat-header-cell>
     <mat-cell *matCellDef="let exercise">
-      {{ exercise.date }}
+      {{ exercise.date | date: 'medium' }}
     </mat-cell>
   </ng-container>
 
