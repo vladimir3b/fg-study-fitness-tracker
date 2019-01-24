@@ -1,3 +1,4 @@
+import { FgAngularFireModule } from './../angularfire/fg-angular-fire.module';
 // Adding angular elements
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -44,7 +45,8 @@ import { TrainingService } from 'src/app/services/training.service';
     MaterialModule,
     RoutingModule,
     FlexLayoutModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FgAngularFireModule
   ],
   providers: [
     AuthService,

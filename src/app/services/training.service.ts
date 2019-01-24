@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { AngularFirestore } from '@angular/fire/firestore';
+
 
 import { IExerciseModel } from '../models/exercise.model';
 
@@ -13,6 +16,7 @@ export class TrainingService {
   private _currentExercise: IExerciseModel;
   private _pastExercises: Array<IExerciseModel>;
   public changedExercise: Subject<IExerciseModel>;
+  public getAvailableExercises: Subject<void>;
   public get availableExercises(): Array<IExerciseModel> {
     return [ ...this._availableExercises ];
   }
@@ -24,44 +28,31 @@ export class TrainingService {
   }
 
   // Class constructor
-  constructor() {
-    this._availableExercises = [
-      {
-        id: 'crunches',
-        name: 'Crunches',
-        duration: 30,
-        calories: 8
-      },
-      {
-        id: 'touch-toes',
-        name: 'Touch Toes',
-        duration: 180,
-        calories: 18
-      },
-      {
-        id: 'side-lunges',
-        name: 'Side Lunges',
-        duration: 120,
-        calories: 12
-      },
-      {
-        id: 'burpees',
-        name: 'Burpees',
-        duration: 60,
-        calories: 8
-      },
-      {
-        id: 'pushups',
-        name: 'Pushups',
-        duration: 45,
-        calories: 20
-      },
-    ];
+  constructor(private _database: AngularFirestore) {
     this._pastExercises = [];
     this.changedExercise = new Subject();
+    this.getAvailableExercises = new Subject();
   }
 
   // Methods
+  public fetchAvailableExercises(): void {
+    this._database
+      .collection('availableExercises')
+      .snapshotChanges()
+      .pipe(map((documents: Array<any>) => {
+        return documents.map((document: any) => {
+          return {
+            id: document.payload.doc.id,
+            ...document.payload.doc.data()
+          };
+        });
+      }))
+      .subscribe((exercises: Array<IExerciseModel>) => {
+        this._availableExercises = exercises;
+        this.getAvailableExercises.next();
+      });
+  }
+
   public startExercise(selectedId: string): void {
     this._currentExercise = this._availableExercises
       .find((exercise: IExerciseModel) => exercise.id === selectedId)
