@@ -5,9 +5,8 @@ import { CurrentTrainingComponent } from '../../components/training/current-trai
 import { NewTrainingComponent } from '../../components/training/new-training/new-training.component';
 import { PastTrainingsComponent } from '../../components/training/past-trainings/past-trainings.component';
 import { StopTrainingComponent } from '../../components/training/stop-training/stop-training.component';
+import { TrainingRoutingModule } from './../training-routing/training-routing.module';
 import { SharedModule } from '../shared/shared.module';
-
-
 
 @NgModule({
   declarations: [
@@ -17,7 +16,10 @@ import { SharedModule } from '../shared/shared.module';
     PastTrainingsComponent,
     StopTrainingComponent
   ],
-  imports: [ SharedModule ],
+  imports: [
+    SharedModule,
+    TrainingRoutingModule
+ ],
   entryComponents: [ StopTrainingComponent ]
 })
 export class TrainingModule { }

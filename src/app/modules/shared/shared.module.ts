@@ -12,7 +12,7 @@ const MODULES = [
   FlexLayoutModule,
   MaterialModule,
   FgAngularFireModule
-]
+];
 
 @NgModule({
   declarations: [],

@@ -11,11 +11,9 @@ import { WelcomeComponent } from '../../components/welcome/welcome.component';
 import { RoutingModule } from './../routing/routing.module';
 import { HeaderComponent } from '../../components/navigation/header/header.component';
 import { SidenavListComponent } from '../../components/navigation/sidenav-list/sidenav-list.component';
-import { StopTrainingComponent } from '../../components/training/stop-training/stop-training.component';
 import { AuthService } from './../../services/auth.service';
 import { TrainingService } from 'src/app/services/training.service';
 import { UserInterfaceService } from 'src/app/services/user-interface.service';
-import { TrainingModule } from './../training/training.module';
 import { FgAngularFireModule } from './../angularfire/fg-angular-fire.module';
 import { AuthModule } from './../auth/auth.module';
 
@@ -33,7 +31,6 @@ import { AuthModule } from './../auth/auth.module';
     RoutingModule,
     FgAngularFireModule,
     AuthModule,
-    TrainingModule,
     MaterialModule,
     FlexLayoutModule
   ],
