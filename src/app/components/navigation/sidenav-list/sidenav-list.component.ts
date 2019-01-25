@@ -20,6 +20,7 @@ export class SidenavListComponent implements OnInit, OnDestroy {
   private _subscription: Subscription;
   @Output() public closeSidenav: EventEmitter<void>;
   public isAuth: boolean;
+  public loggedUser: string;
 
   // Class Constructor
   constructor(private _authService: AuthService) {
@@ -30,6 +31,7 @@ export class SidenavListComponent implements OnInit, OnDestroy {
   // Life-cycle hooks
   ngOnInit() {
     this._subscription = this._authService.authChange.subscribe((authStatus: boolean) => {
+      this.loggedUser = this._authService.loggedUser;
       this.isAuth = authStatus;
     });
   }

@@ -6,18 +6,18 @@
       fxLayoutAlign="center center"
       fxLayoutGap="10px">
     <mat-form-field hintLabel="Enter the email you signed up with.">
-      <input 
+      <input
         type="email"
         formControlName="email"
         matInput
         placeholder="Your email">
-      <mat-error 
+      <mat-error
           *ngIf="!(loginForm.get('email').valid && loginForm.get('email').touched)">
         You have to enter your valid email.
       </mat-error>
     </mat-form-field>
     <mat-form-field>
-      <input 
+      <input
           type="password"
           formControlName="password"
           matInput
@@ -27,11 +27,13 @@
       </mat-error>
     </mat-form-field>
     <button
+        *ngIf="!isLoading"
         [disabled]="!loginForm.valid"
         type="submit"
         mat-raised-button
         color="primary">
       Login
     </button>
+    <mat-spinner *ngIf="isLoading"></mat-spinner>
   </form>
 </section>

@@ -22,6 +22,7 @@ import { SidenavListComponent } from '../../components/navigation/sidenav-list/s
 import { StopTrainingComponent } from '../../components/training/stop-training/stop-training.component';
 import { AuthService } from './../../services/auth.service';
 import { TrainingService } from 'src/app/services/training.service';
+import { UserInterfaceService } from 'src/app/services/user-interface.service';
 
 
 @NgModule({
@@ -50,7 +51,8 @@ import { TrainingService } from 'src/app/services/training.service';
   ],
   providers: [
     AuthService,
-    TrainingService
+    TrainingService,
+    UserInterfaceService
   ],
   bootstrap: [ RootComponent ],
   entryComponents: [ StopTrainingComponent ]

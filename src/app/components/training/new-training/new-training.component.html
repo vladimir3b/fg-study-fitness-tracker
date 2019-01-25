@@ -3,13 +3,17 @@
     fxLayoutAlign="center center"
     class="new-training">
   <form
+      fxFlex="400px"
+      fxFlex.lt-md="100%"
       #trainingForm="ngForm"
       (ngSubmit)="onStartTraining(trainingForm.value.chosenId)">
-    <mat-card fxFlex="400px" fxFlex.lt-md="100%">
+    <mat-card>
       <mat-card-title fxLayoutAlign="center center">
         Time to start a workout!
       </mat-card-title>
-      <mat-card-content fxLayoutAlign="center center">
+      <mat-card-content
+          *ngIf="!isLoading"
+          fxLayoutAlign="center center">
         <mat-form-field>
           <mat-select
               ngModel
@@ -24,16 +28,25 @@
           </mat-select>
         </mat-form-field>
       </mat-card-content>
-      <mat-card-actions fxLayoutAlign="center center">
+      <mat-card-actions
+          *ngIf="!isLoading"
+          fxLayoutAlign="center center">
         <button
             [disabled]="trainingForm.invalid"
-            style="margin-bottom:15px"
+            style="margin-bottom: 25px"
             color="primary"
             mat-raised-button
             type="submit">
           Start
         </button>
       </mat-card-actions>
+      <div
+          *ngIf="isLoading"
+          style="margin: 25px 0; "
+          fxLayoutAlign="center center">
+        <br>
+        <mat-spinner></mat-spinner>
+      </div>
     </mat-card>
   </form>
 </section>

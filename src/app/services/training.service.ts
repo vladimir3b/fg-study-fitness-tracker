@@ -90,7 +90,7 @@ export class TrainingService {
 
   public startExercise(selectedId: string): void {
     this._currentExercise = this._availableExercises
-      .find((exercise: IExerciseModel) => exercise.id === selectedId)
+      .find((exercise: IExerciseModel) => exercise.id === selectedId);
     this.changedExercise.next(this.currentExercise);
   }
 

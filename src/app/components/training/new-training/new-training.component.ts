@@ -13,16 +13,21 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
   // Properties
   private _subscription: Subscription;
+  public isLoading: boolean;
   public exercises: Array<IExerciseModel>;
 
   // Class Constructor
-  constructor( private _trainingService: TrainingService ) { }
+  constructor( private _trainingService: TrainingService ) {
+    this.isLoading = true;
+  }
 
   // Life-cycle hooks
   public ngOnInit(): void  {
-    this._subscription = this._trainingService.getAvailableExercises.subscribe(() => {
-      this.exercises = this._trainingService.availableExercises;
-    });
+    this._subscription = this._trainingService.getAvailableExercises
+      .subscribe(() => {
+        this.exercises = this._trainingService.availableExercises;
+        this.isLoading = false;
+      });
     this._trainingService.fetchAvailableExercises();
   }
 

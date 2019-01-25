@@ -1,4 +1,7 @@
 <mat-nav-list>
+  <mat-list-item *ngIf="isAuth">
+    User: <em>{{ loggedUser }}</em>
+  </mat-list-item>
   <a
       *ngIf="!isAuth"
       (click)="onSidenavClose()"
