@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
+import { AuthService } from 'src/app/services/auth.service';
+
+
 @Component({
   selector: 'fg-root',
   templateUrl: './root.component.html',
@@ -8,15 +11,11 @@ import { Component, OnInit } from '@angular/core';
 export class RootComponent implements OnInit {
 
   // Class Constructor
-  constructor() { }
+  constructor(private _authService: AuthService) { }
 
   // Life-cycle hooks
   ngOnInit() {
-  }
-
-  // Methods
-  public onToggle(): void {
-
+    this._authService.initAuthListener();
   }
 
 }

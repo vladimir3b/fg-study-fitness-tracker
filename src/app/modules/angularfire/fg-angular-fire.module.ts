@@ -1,11 +1,13 @@
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule, FirestoreSettingsToken } from '@angular/fire/firestore';
+import { AngularFireAuthModule } from '@angular/fire/auth';
 import { NgModule } from '@angular/core';
 
 import { environment } from './../../../environments/environment';
 
 const ANGULARFIRE_MODULES = [
-  AngularFirestoreModule
+  AngularFirestoreModule,
+  AngularFireAuthModule
 ];
 
 @NgModule({
