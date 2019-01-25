@@ -26,15 +26,18 @@ export class SignupComponent implements OnInit, OnDestroy {
   }
   // Life-cycle Hooks
   public ngOnInit(): void {
-    this._subscription = this._userInterfaceService.loadingStateChanged.subscribe((isLoading: boolean) => {
-      this.isLoading = isLoading;
-    });
+    this._subscription = this._userInterfaceService.registeringProgress
+    .subscribe((isLoading: boolean) => {
+        this.isLoading = isLoading;
+      });
     this.maximumDate = new Date();
     this.maximumDate.setFullYear(this.maximumDate.getFullYear() - 18);
   }
 
   public ngOnDestroy(): void {
-    this._subscription.unsubscribe();
+    if (this._subscription) {
+      this._subscription.unsubscribe();
+    }
   }
 
   // Methods

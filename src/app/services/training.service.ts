@@ -3,7 +3,7 @@ import { Subject, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AngularFirestore } from '@angular/fire/firestore';
 
-
+import { UserInterfaceService } from './user-interface.service';
 import { IExerciseModel } from '../models/exercise.model';
 
 @Injectable({
@@ -16,17 +16,17 @@ export class TrainingService {
   private _currentExercise: IExerciseModel;
   private _subscriptions: Array<Subscription>;
   public changedExercise: Subject<IExerciseModel>;
-  public getAvailableExercises: Subject<void>;
+  public getAvailableExercises: Subject<Array<IExerciseModel>>;
   public getPastExercises: Subject<Array<IExerciseModel>>;
-  public get availableExercises(): Array<IExerciseModel> {
-    return [ ...this._availableExercises ];
-  }
   public get currentExercise(): IExerciseModel {
     return (this._currentExercise) ? { ...this._currentExercise } : null;
   }
 
   // Class constructor
-  constructor(private _database: AngularFirestore) {
+  constructor(
+      private _database: AngularFirestore,
+      private _userInterfaceService: UserInterfaceService
+  ) {
     this._subscriptions = [];
     this.changedExercise = new Subject();
     this.getAvailableExercises = new Subject();
@@ -39,11 +39,11 @@ export class TrainingService {
       .add(exercise)
       .catch((error) => {
         console.error(error);
-
       });
   }
 
   public fetchAvailableExercises(): void {
+    this._userInterfaceService.loadingAvailableExercisesInProgress.next(true);
     this._subscriptions.push(this._database
       .collection('availableExercises')
       .snapshotChanges()
@@ -57,16 +57,20 @@ export class TrainingService {
       }))
       .subscribe(
         (exercises: Array<IExerciseModel>) => {
+          this._userInterfaceService.loadingAvailableExercisesInProgress.next(false);
           this._availableExercises = exercises;
-          this.getAvailableExercises.next();
+          this.getAvailableExercises.next([ ...this._availableExercises ]);
         },
         (error) => {
-          console.error(error);
+          this._userInterfaceService.loadingAvailableExercisesInProgress.next(false);
+          this._userInterfaceService.showSnackBarMessages(error.message, null, 5000);
+          this.getAvailableExercises.next(null);
         }
       ));
   }
 
   public fetchPastExercises(): void {
+    this._userInterfaceService.loadingPastExercisesInProgress.next(true);
     this._subscriptions.push(this._database
       .collection('pastExercises')
       .valueChanges()
@@ -80,10 +84,12 @@ export class TrainingService {
       }))
       .subscribe(
         (exercises: Array<IExerciseModel>) => {
-          this.getPastExercises.next(exercises);
+          this._userInterfaceService.loadingPastExercisesInProgress.next(false);
+          this.getPastExercises.next([ ...exercises ]);
         },
         (error) => {
-          console.error(error);
+          this._userInterfaceService.loadingPastExercisesInProgress.next(false);
+          this._userInterfaceService.showSnackBarMessages(error.message, null, 5000);
         }
       ));
   }
@@ -107,8 +113,10 @@ export class TrainingService {
   }
 
   public cancelSubscriptions(): void {
-    this._subscriptions.forEach( (subscription: Subscription) => {
-      subscription.unsubscribe();
+    this._subscriptions.forEach((subscription: Subscription) => {
+      if (subscription) {
+        subscription.unsubscribe();
+      }
     });
   }
 

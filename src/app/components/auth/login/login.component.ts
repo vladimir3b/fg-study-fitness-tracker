@@ -27,9 +27,10 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   // Life-cycle hooks
   public ngOnInit(): void {
-    this._subscription = this._userInterfaceService.loadingStateChanged.subscribe((isLoading: boolean) => {
-      this.isLoading = isLoading;
-    });
+    this._subscription = this._userInterfaceService.loggingInProgress
+      .subscribe((isLoading: boolean) => {
+        this.isLoading = isLoading;
+      });
     this.loginForm = new FormGroup({
       'email': new FormControl(null, [
         Validators.required,
@@ -40,7 +41,9 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this._subscription.unsubscribe();
+    if (this._subscription) {
+      this._subscription.unsubscribe();
+    }
   }
 
   // Methods

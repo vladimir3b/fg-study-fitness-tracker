@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { MatSnackBar } from '@angular/material';
 
 import { IUserModel } from '../models/user.model';
 import { IAuthDataModel } from './../models/auth-data.model';
@@ -29,7 +28,6 @@ export class AuthService {
   constructor(
       private _router: Router,
       private _angularFireAuth: AngularFireAuth,
-      private _snackBar: MatSnackBar,
       private _trainingService: TrainingService,
       private _userInterfaceService: UserInterfaceService
   ) {
@@ -55,32 +53,28 @@ export class AuthService {
   }
 
   public registerUser(authData: IAuthDataModel): void {
-    this._userInterfaceService.loadingStateChanged.next(true); // register process has started
+    this._userInterfaceService.registeringProgress.next(true); // register process has started
     this._angularFireAuth.auth
       .createUserWithEmailAndPassword(authData.email, authData.password)
       .then(() => {
-        this._userInterfaceService.loadingStateChanged.next(false); // register process has successfully terminated
+        this._userInterfaceService.registeringProgress.next(false); // register process has successfully terminated
       })
       .catch((error) => {
-        this._userInterfaceService.loadingStateChanged.next(false); // register process has terminated with an error
-        this._snackBar.open(error.message, null, {
-          duration: 3000
-        });
+        this._userInterfaceService.registeringProgress.next(false); // register process has terminated with an error
+        this._userInterfaceService.showSnackBarMessages(error.message, null, 5000);
       });
   }
 
   public login(authData: IAuthDataModel): void {
-    this._userInterfaceService.loadingStateChanged.next(true); // login process has started
+    this._userInterfaceService.loggingInProgress.next(true); // login process has started
     this._angularFireAuth.auth
       .signInWithEmailAndPassword(authData.email, authData.password)
       .then(() => {
-        this._userInterfaceService.loadingStateChanged.next(false); // login process has successfully terminated
+        this._userInterfaceService.loggingInProgress.next(false); // login process has successfully terminated
       })
       .catch((error) => {
-        this._userInterfaceService.loadingStateChanged.next(false); // login process has terminated with an error
-        this._snackBar.open(error.message, null, {
-          duration: 3000
-        });
+        this._userInterfaceService.loggingInProgress.next(false); // login process has terminated with an error
+        this._userInterfaceService.showSnackBarMessages(error.message, null, 5000);
       });
   }
 

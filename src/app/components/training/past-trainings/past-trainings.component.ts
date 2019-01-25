@@ -10,6 +10,7 @@ import { MatTableDataSource, MatSort, MatPaginator } from '@angular/material';
 
 import { IExerciseModel } from 'src/app/models/exercise.model';
 import { TrainingService } from './../../../services/training.service';
+import { UserInterfaceService } from 'src/app/services/user-interface.service';
 
 @Component({
   selector: 'fg-past-trainings',
@@ -21,14 +22,18 @@ export class PastTrainingsComponent implements OnInit, AfterViewInit, OnDestroy{
   // Properties
   @ViewChild(MatSort) private _sort: MatSort;
   @ViewChild(MatPaginator) private _paginator: MatPaginator;
-  private _subscription: Subscription;
+  private _subscriptions: Array<Subscription>;
   public displayedColumns: Array<string>;
   public pastExercises: MatTableDataSource<IExerciseModel>;
   public pageSizeOptions: Array<number>;
   public pageSizeOptionsIndex: number;
+  public isLoading: boolean;
 
   // Class Constructor
-  constructor(private _trainingService: TrainingService) {
+  constructor(
+      private _trainingService: TrainingService,
+      private _userInterfaceService: UserInterfaceService
+  ) {
     this.displayedColumns = [
       'date',
       'name',
@@ -36,6 +41,8 @@ export class PastTrainingsComponent implements OnInit, AfterViewInit, OnDestroy{
       'duration',
       'state'
     ];
+    this._subscriptions = [];
+    this.isLoading = false;
     this.pastExercises = new MatTableDataSource();
     this.pageSizeOptionsIndex = 2;
     this.pageSizeOptions = [1, 2, 5, 10, 25, 50, 100];
@@ -43,9 +50,14 @@ export class PastTrainingsComponent implements OnInit, AfterViewInit, OnDestroy{
 
   // Life-cycle hooks
   public ngOnInit(): void {
-    this._subscription = this._trainingService.getPastExercises.subscribe((exercises: Array<IExerciseModel>) => {
-      this.pastExercises.data = exercises;
-    });
+    this._subscriptions.push(this._userInterfaceService.loadingPastExercisesInProgress
+      .subscribe((isLoading: boolean) => {
+        this.isLoading = isLoading;
+      }));
+    this._subscriptions.push(this._trainingService.getPastExercises
+      .subscribe((exercises: Array<IExerciseModel>) => {
+        this.pastExercises.data = exercises;
+      }));
     this._trainingService.fetchPastExercises();
   }
 
@@ -55,12 +67,17 @@ export class PastTrainingsComponent implements OnInit, AfterViewInit, OnDestroy{
   }
 
   public ngOnDestroy(): void {
-    this._subscription.unsubscribe();
+    this._subscriptions.forEach((subscription: Subscription) => {
+      if (subscription) {
+        subscription.unsubscribe();
+      }
+    });
   }
 
   // Methods
   public doFilter(filterString: string): void {
     this.pastExercises.filter = filterString.trim().toLowerCase();
   }
+
 }
 
