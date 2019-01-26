@@ -17,7 +17,9 @@ import { TrainingService } from 'src/app/services/training.service';
 import { UserInterfaceService } from 'src/app/services/user-interface.service';
 import { FgAngularFireModule } from './../angularfire/fg-angular-fire.module';
 import { AuthModule } from './../auth/auth.module';
-import { appReducer } from 'src/app/reducers/app.reducer';
+import { AppReducer as fromRoot } from 'src/app/reducers/app.reducer';
+
+const REDUCERS = fromRoot.REDUCERS;
 
 
 @NgModule({
@@ -35,9 +37,7 @@ import { appReducer } from 'src/app/reducers/app.reducer';
     AuthModule,
     MaterialModule,
     FlexLayoutModule,
-    StoreModule.forRoot({
-      ui: appReducer
-    })
+    StoreModule.forRoot(REDUCERS)
   ],
   providers: [
     AuthService,

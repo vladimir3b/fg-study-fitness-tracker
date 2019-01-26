@@ -1,27 +1,23 @@
-interface IState {
-  isLoading: boolean;
-}
+import {
+  ActionReducerMap,
+  createFeatureSelector,
+  createSelector
+} from '@ngrx/store';
 
-const initialState: IState = {
-  isLoading: false
-};
+import { UserInterfaceReducer as fromUserInterface } from './user-interface.reducer';
 
-function appReducer(state: IState = initialState, action): IState {
-  switch (action.type) {
-    case 'START_LOADING':
-      return {
-        isLoading: true
-      };
-    case 'STOP_LOADING':
-      return {
-        isLoading: false
-      };
-    default:
-      return state;
+
+export namespace AppReducer {
+
+  export interface IState {
+    userInterface: fromUserInterface.IState;
   }
-}
 
-export {
-  IState,
-  appReducer
+  export const REDUCERS: ActionReducerMap<IState> = {
+    userInterface: fromUserInterface.reducer
+  };
+
+  export const USER_INTERFACE_STATE = createFeatureSelector<fromUserInterface.IState>('userInterface');
+  export const GET_IS_LOADING = createSelector(USER_INTERFACE_STATE, fromUserInterface.GET_IS_LOADING);
+
 }

@@ -6,7 +6,7 @@ import { map } from 'rxjs/operators';
 
 import { AuthService } from 'src/app/services/auth.service';
 import { UserInterfaceService } from 'src/app/services/user-interface.service';
-import { IState } from 'src/app/reducers/app.reducer';
+import { AppReducer as fromRoot } from 'src/app/reducers/app.reducer';
 
 @Component({
   selector: 'fg-login',
@@ -24,12 +24,12 @@ export class LoginComponent implements OnInit {
   constructor(
       private _authService: AuthService,
       private _userInterfaceService: UserInterfaceService,
-      private _store: Store<{ui: IState}>
+      private _store: Store<fromRoot.IState>
   ) {}
 
   // Life-cycle hooks
   public ngOnInit(): void {
-    this.isLoading$ = this._store.pipe(map(state => state.ui.isLoading));
+    this.isLoading$ = this._store.select(fromRoot.GET_IS_LOADING);
     this.loginForm = new FormGroup({
       'email': new FormControl(null, [
         Validators.required,
@@ -38,7 +38,6 @@ export class LoginComponent implements OnInit {
       'password': new FormControl(null, Validators.required)
     });
   }
-
 
   // Methods
   public onSubmit(): void {
