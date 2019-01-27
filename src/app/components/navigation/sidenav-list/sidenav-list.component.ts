@@ -39,7 +39,6 @@ export class SidenavListComponent implements OnInit, OnDestroy {
     this.isAuth$ = this._store.select(fromRoot.GET_IS_AUTHENTICATED);
     this._subscription.push(this._authService.loggedUser.subscribe((userName: string) => {
       this.loggedUser = userName;
-      console.log(userName);
     }));
   }
 

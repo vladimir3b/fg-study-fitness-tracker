@@ -9,7 +9,6 @@ export namespace AuthReducer {
 
   const INITIAL_STATE: IState = {
     isAuthenticated: false
-
   };
 
   export function reducer(state: IState = INITIAL_STATE, action: AuthActions.actionsType): IState {

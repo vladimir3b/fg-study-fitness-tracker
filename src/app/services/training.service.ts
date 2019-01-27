@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Subject, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
+import { map, take } from 'rxjs/operators';
 import { AngularFirestore } from '@angular/fire/firestore';
 
 import { UserInterfaceService } from './user-interface.service';
 import { IExerciseModel } from '../models/exercise.model';
-import { AppReducer as fromRoot } from '../reducers/app.reducer';
+import { TrainingReducer as fromTraining } from '../reducers/training.reducer';
 import { UserInterfaceActions as UserInterface} from '../reducers/user-interface.actions';
-
+import { TrainingActions as Training } from '../reducers/training.actions';
 
 
 @Injectable({
@@ -17,26 +17,15 @@ import { UserInterfaceActions as UserInterface} from '../reducers/user-interface
 export class TrainingService {
 
   // Properties
-  private _availableExercises: Array<IExerciseModel>;
-  private _currentExercise: IExerciseModel;
   private _subscriptions: Array<Subscription>;
-  public changedExercise: Subject<IExerciseModel>;
-  public getAvailableExercises: Subject<Array<IExerciseModel>>;
-  public getPastExercises: Subject<Array<IExerciseModel>>;
-  public get currentExercise(): IExerciseModel {
-    return (this._currentExercise) ? { ...this._currentExercise } : null;
-  }
 
   // Class constructor
   constructor(
       private _database: AngularFirestore,
       private _userInterfaceService: UserInterfaceService,
-      private _store: Store<fromRoot.IState>
+      private _store: Store<fromTraining.IState>
   ) {
     this._subscriptions = [];
-    this.changedExercise = new Subject();
-    this.getAvailableExercises = new Subject();
-    this.getPastExercises = new Subject();
   }
 
   // Methods
@@ -64,13 +53,11 @@ export class TrainingService {
       .subscribe(
         (exercises: Array<IExerciseModel>) => {
           this._store.dispatch(new UserInterface.StopLoading());
-          this._availableExercises = exercises;
-          this.getAvailableExercises.next([ ...this._availableExercises ]);
+          this._store.dispatch(new Training.SetAvailableTrainings(exercises));
         },
         (error) => {
           this._store.dispatch(new UserInterface.StopLoading());
           this._userInterfaceService.showSnackBarMessages(error.message, null, 5000);
-          this.getAvailableExercises.next(null);
         }
       ));
   }
@@ -91,7 +78,7 @@ export class TrainingService {
       .subscribe(
         (exercises: Array<IExerciseModel>) => {
           this._store.dispatch(new UserInterface.StopLoading());
-          this.getPastExercises.next([ ...exercises ]);
+          this._store.dispatch(new Training.SetFinishedTrainings(exercises));
         },
         (error) => {
           this._store.dispatch(new UserInterface.StopLoading());
@@ -101,21 +88,22 @@ export class TrainingService {
   }
 
   public startExercise(selectedId: string): void {
-    this._currentExercise = this._availableExercises
-      .find((exercise: IExerciseModel) => exercise.id === selectedId);
-    this.changedExercise.next(this.currentExercise);
+    this._store.dispatch(new Training.StartTraining(selectedId));
   }
 
   public terminateExercise(progress: number): void {
-    this._addFinishedExerciseToDataBase({
-      ...this.currentExercise,
-      date: new Date(),
-      state: (progress === 100) ? 'completed' : 'cancelled',
-      duration: this.currentExercise.duration * (progress / 100),
-      calories: this.currentExercise.calories * (progress / 100)
-    });
-    this._currentExercise = null;
-    this.changedExercise.next(this.currentExercise);
+    this._store.select(fromTraining.GET_ACTIVE_TRAINING)
+      .pipe(take(1))
+      .subscribe((exercise: IExerciseModel) => {
+        this._addFinishedExerciseToDataBase({
+          ...exercise,
+          date: new Date(),
+          state: (progress === 100) ? 'completed' : 'cancelled',
+          duration: exercise.duration * (progress / 100),
+          calories: exercise.calories * (progress / 100)
+        });
+        this._store.dispatch(new Training.StopTraining());
+      });
   }
 
   public cancelSubscriptions(): void {

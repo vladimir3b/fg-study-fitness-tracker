@@ -25,6 +25,10 @@ export class AuthGuardService implements CanLoad {
 
   // Methods
   public canLoad(route: Route): Observable<boolean> {
-    return this._store.select(fromRoot.GET_IS_AUTHENTICATED).pipe(take(1));
+    const IS_AUTHENTICATED = this._store.select(fromRoot.GET_IS_AUTHENTICATED).pipe(take(1));
+    IS_AUTHENTICATED.subscribe((result: boolean) => {
+      this._router.navigate([(result) ? '/training' : '/']);
+    });
+    return IS_AUTHENTICATED;
   }
 }

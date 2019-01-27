@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { take } from 'rxjs/operators';
 import { MatDialogRef, MatDialog } from '@angular/material';
 
 import { StopTrainingComponent } from './../stop-training/stop-training.component';
 import { TrainingService } from 'src/app/services/training.service';
 import { IExerciseModel } from 'src/app/models/exercise.model';
+import { TrainingReducer as fromTraining } from 'src/app/reducers/training.reducer';
 
 
 @Component({
@@ -21,26 +24,31 @@ export class CurrentTrainingComponent implements OnInit {
   // Class Constructor
   constructor(
       private _dialog: MatDialog,
-      private _trainingService: TrainingService
+      private _trainingService: TrainingService,
+      private _store: Store<fromTraining.IState>
   ) {
     this.progress = 0;
   }
 
   // Life-cycle hooks
   public ngOnInit(): void {
-    this.currentExercise = this._trainingService.currentExercise;
     this.controlTimer();
   }
 
   // Methods
   public controlTimer(): void {
-    this.timer = <any>setInterval(() => {
-      this.progress += 1;
-      if (this.progress >= 100) {
-        this._trainingService.terminateExercise(100);
-        clearInterval(this.timer);
-      }
-    }, this.currentExercise.duration * 0.5); // modify this to 10 in the final version
+    this._store.select(fromTraining.GET_ACTIVE_TRAINING)
+      .pipe(take(1))
+      .subscribe((exercise: IExerciseModel) => {
+        this.currentExercise = exercise;
+        this.timer = <any>setInterval(() => {
+          this.progress += 1;
+          if (this.progress >= 100) {
+            this._trainingService.terminateExercise(100);
+            clearInterval(this.timer);
+          }
+      }, this.currentExercise.duration * 10); // modify this to 10 in the final version
+    });
   }
 
   public onStop(): void {
