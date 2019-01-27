@@ -11,7 +11,6 @@ import {
 
 import { AppReducer as fromRoot } from '../reducers/app.reducer';
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -27,7 +26,9 @@ export class AuthGuardService implements CanLoad {
   public canLoad(route: Route): Observable<boolean> {
     const IS_AUTHENTICATED = this._store.select(fromRoot.GET_IS_AUTHENTICATED).pipe(take(1));
     IS_AUTHENTICATED.subscribe((result: boolean) => {
-      this._router.navigate([(result) ? '/training' : '/']);
+      if (!result) {
+        this._router.navigate(['/']);
+      }
     });
     return IS_AUTHENTICATED;
   }
