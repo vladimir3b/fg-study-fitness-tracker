@@ -1,10 +1,15 @@
 import { Injectable } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { Subject, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AngularFirestore } from '@angular/fire/firestore';
 
 import { UserInterfaceService } from './user-interface.service';
 import { IExerciseModel } from '../models/exercise.model';
+import { AppReducer as fromRoot } from '../reducers/app.reducer';
+import { UserInterfaceActions as UserInterface} from '../reducers/user-interface.actions';
+
+
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +30,8 @@ export class TrainingService {
   // Class constructor
   constructor(
       private _database: AngularFirestore,
-      private _userInterfaceService: UserInterfaceService
+      private _userInterfaceService: UserInterfaceService,
+      private _store: Store<fromRoot.IState>
   ) {
     this._subscriptions = [];
     this.changedExercise = new Subject();
@@ -43,7 +49,7 @@ export class TrainingService {
   }
 
   public fetchAvailableExercises(): void {
-    this._userInterfaceService.loadingAvailableExercisesInProgress.next(true);
+    this._store.dispatch(new UserInterface.StartLoading());
     this._subscriptions.push(this._database
       .collection('availableExercises')
       .snapshotChanges()
@@ -57,12 +63,12 @@ export class TrainingService {
       }))
       .subscribe(
         (exercises: Array<IExerciseModel>) => {
-          this._userInterfaceService.loadingAvailableExercisesInProgress.next(false);
+          this._store.dispatch(new UserInterface.StopLoading());
           this._availableExercises = exercises;
           this.getAvailableExercises.next([ ...this._availableExercises ]);
         },
         (error) => {
-          this._userInterfaceService.loadingAvailableExercisesInProgress.next(false);
+          this._store.dispatch(new UserInterface.StopLoading());
           this._userInterfaceService.showSnackBarMessages(error.message, null, 5000);
           this.getAvailableExercises.next(null);
         }
@@ -70,7 +76,7 @@ export class TrainingService {
   }
 
   public fetchPastExercises(): void {
-    this._userInterfaceService.loadingPastExercisesInProgress.next(true);
+    this._store.dispatch(new UserInterface.StartLoading());
     this._subscriptions.push(this._database
       .collection('pastExercises')
       .valueChanges()
@@ -84,11 +90,11 @@ export class TrainingService {
       }))
       .subscribe(
         (exercises: Array<IExerciseModel>) => {
-          this._userInterfaceService.loadingPastExercisesInProgress.next(false);
+          this._store.dispatch(new UserInterface.StopLoading());
           this.getPastExercises.next([ ...exercises ]);
         },
         (error) => {
-          this._userInterfaceService.loadingPastExercisesInProgress.next(false);
+          this._store.dispatch(new UserInterface.StopLoading());
           this._userInterfaceService.showSnackBarMessages(error.message, null, 5000);
         }
       ));

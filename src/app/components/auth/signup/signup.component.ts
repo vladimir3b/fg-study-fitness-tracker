@@ -1,43 +1,36 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { AuthService } from './../../../services/auth.service';
 import { UserInterfaceService } from 'src/app/services/user-interface.service';
+import { AppReducer as fromRoot } from 'src/app/reducers/app.reducer';
+
 
 @Component({
   selector: 'fg-signup',
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.scss']
 })
-export class SignupComponent implements OnInit, OnDestroy {
+export class SignupComponent implements OnInit {
 
   // Properties
-  private _subscription: Subscription;
   public maximumDate: Date;
-  public isLoading: boolean;
+  public isLoading$: Observable<boolean>;
 
   // Class Constructor
   constructor(
       private _authService: AuthService,
-      private _userInterfaceService: UserInterfaceService
-  ) {
-    this.isLoading = false;
-  }
+      private _userInterfaceService: UserInterfaceService,
+      private _store: Store<fromRoot.IState>
+  ) {}
+
   // Life-cycle Hooks
   public ngOnInit(): void {
-    this._subscription = this._userInterfaceService.registeringProgress
-    .subscribe((isLoading: boolean) => {
-        this.isLoading = isLoading;
-      });
+    this.isLoading$ = this._store.select(fromRoot.GET_IS_LOADING);
     this.maximumDate = new Date();
     this.maximumDate.setFullYear(this.maximumDate.getFullYear() - 18);
-  }
-
-  public ngOnDestroy(): void {
-    if (this._subscription) {
-      this._subscription.unsubscribe();
-    }
   }
 
   // Methods

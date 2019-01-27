@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/auth';
 
-import { IUserModel } from '../models/user.model';
 import { IAuthDataModel } from './../models/auth-data.model';
 import { TrainingService } from './training.service';
 import { UserInterfaceService } from 'src/app/services/user-interface.service';

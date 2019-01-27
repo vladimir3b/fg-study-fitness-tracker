@@ -12,7 +12,7 @@
         Time to start a workout!
       </mat-card-title>
       <mat-card-content
-          *ngIf="!isLoading && exercises"
+          *ngIf="!(isLoading$ | async) && exercises"
           fxLayoutAlign="center center">
         <mat-form-field>
           <mat-select
@@ -29,7 +29,7 @@
         </mat-form-field>
       </mat-card-content>
       <mat-card-actions
-          *ngIf="!isLoading"
+          *ngIf="!(isLoading$ | async)"
           fxLayoutAlign="center center">
         <button
             *ngIf="exercises"
@@ -51,7 +51,7 @@
         </button>
       </mat-card-actions>
       <div
-          *ngIf="isLoading"
+          *ngIf="isLoading$ | async"
           style="margin: 25px 0; "
           fxLayoutAlign="center center">
         <br>

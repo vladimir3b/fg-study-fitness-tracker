@@ -1,9 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
+import { Store } from '@ngrx/store';
 
 import { TrainingService } from './../../../services/training.service';
 import { IExerciseModel } from 'src/app/models/exercise.model';
 import { UserInterfaceService } from 'src/app/services/user-interface.service';
+import { AppReducer as fromRoot } from 'src/app/reducers/app.reducer';
 
 @Component({
   selector: 'fg-new-training',
@@ -14,24 +16,21 @@ export class NewTrainingComponent implements OnInit, OnDestroy {
 
   // Properties
   private _subscriptions: Array<Subscription>;
-  public isLoading: boolean;
+  public isLoading$: Observable<boolean>;
   public exercises: Array<IExerciseModel>;
 
   // Class Constructor
   constructor(
       private _trainingService: TrainingService,
-      private _userInterfaceService: UserInterfaceService
+      private _userInterfaceService: UserInterfaceService,
+      private _store: Store<fromRoot.IState>
   ) {
     this._subscriptions = [];
-    this.isLoading = false;
   }
 
   // Life-cycle hooks
   public ngOnInit(): void  {
-    this._subscriptions.push(this._userInterfaceService.loadingAvailableExercisesInProgress
-      .subscribe((isLoading: boolean) => {
-        this.isLoading = isLoading;
-      }));
+    this.isLoading$ = this._store.select(fromRoot.GET_IS_LOADING);
     this._subscriptions.push(this._trainingService.getAvailableExercises
       .subscribe((exercises: Array<IExerciseModel>) => {
         this.exercises = exercises;

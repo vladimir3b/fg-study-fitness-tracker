@@ -1,4 +1,4 @@
-<section [hidden]="isLoading">
+<section [hidden]="isLoading$ | async">
   <!--
     If we used *ngIf in place of [hidden] we would broke the ViewChild chain...
     It is possible to access elements in another way than using ViewChild,
@@ -85,7 +85,7 @@
 </section>
 
 <div
-    *ngIf="isLoading"
+    *ngIf="isLoading$ | async"
     style="margin: 25px 0; "
     fxLayoutAlign="center center">
   <br>

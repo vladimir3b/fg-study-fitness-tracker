@@ -5,19 +5,25 @@ import {
   AfterViewInit,
   OnDestroy
 } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { MatTableDataSource, MatSort, MatPaginator } from '@angular/material';
+import { Subscription, Observable } from 'rxjs';
+import {
+  MatTableDataSource,
+  MatSort,
+  MatPaginator
+} from '@angular/material';
+import { Store } from '@ngrx/store';
 
 import { IExerciseModel } from 'src/app/models/exercise.model';
 import { TrainingService } from './../../../services/training.service';
 import { UserInterfaceService } from 'src/app/services/user-interface.service';
+import { AppReducer as fromRoot } from 'src/app/reducers/app.reducer';
 
 @Component({
   selector: 'fg-past-trainings',
   templateUrl: './past-trainings.component.html',
   styleUrls: ['./past-trainings.component.scss']
 })
-export class PastTrainingsComponent implements OnInit, AfterViewInit, OnDestroy{
+export class PastTrainingsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // Properties
   @ViewChild(MatSort) private _sort: MatSort;
@@ -27,12 +33,13 @@ export class PastTrainingsComponent implements OnInit, AfterViewInit, OnDestroy{
   public pastExercises: MatTableDataSource<IExerciseModel>;
   public pageSizeOptions: Array<number>;
   public pageSizeOptionsIndex: number;
-  public isLoading: boolean;
+  public isLoading$: Observable<boolean>;
 
   // Class Constructor
   constructor(
       private _trainingService: TrainingService,
-      private _userInterfaceService: UserInterfaceService
+      private _userInterfaceService: UserInterfaceService,
+      private _store: Store<fromRoot.IState>
   ) {
     this.displayedColumns = [
       'date',
@@ -42,7 +49,6 @@ export class PastTrainingsComponent implements OnInit, AfterViewInit, OnDestroy{
       'state'
     ];
     this._subscriptions = [];
-    this.isLoading = false;
     this.pastExercises = new MatTableDataSource();
     this.pageSizeOptionsIndex = 2;
     this.pageSizeOptions = [1, 2, 5, 10, 25, 50, 100];
@@ -50,10 +56,7 @@ export class PastTrainingsComponent implements OnInit, AfterViewInit, OnDestroy{
 
   // Life-cycle hooks
   public ngOnInit(): void {
-    this._subscriptions.push(this._userInterfaceService.loadingPastExercisesInProgress
-      .subscribe((isLoading: boolean) => {
-        this.isLoading = isLoading;
-      }));
+    this.isLoading$ = this._store.select(fromRoot.GET_IS_LOADING);
     this._subscriptions.push(this._trainingService.getPastExercises
       .subscribe((exercises: Array<IExerciseModel>) => {
         this.pastExercises.data = exercises;
