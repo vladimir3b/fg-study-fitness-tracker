@@ -1,3 +1,4 @@
+import { Store } from '@ngrx/store';
 import {
   Component,
   OnInit,
@@ -5,10 +6,10 @@ import {
   Output,
   OnDestroy
 } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
+import { AppReducer as fromRoot } from '../../../reducers/app.reducer';
 import { AuthService } from 'src/app/services/auth.service';
-
 
 @Component({
   selector: 'fg-header',
@@ -18,29 +19,32 @@ import { AuthService } from 'src/app/services/auth.service';
 export class HeaderComponent implements OnInit, OnDestroy {
 
   // Properties
-  private _subscription: Subscription;
+  private _subscription: Array<Subscription>;
   @Output() public sidenavToggle: EventEmitter<void>;
-  public isAuth: boolean;
+  public isAuth$: Observable<boolean>;
   public loggedUser: string;
 
   // Class constructor
-  constructor(private _authService: AuthService) {
-    this.isAuth = false;
+  constructor(
+    private _authService: AuthService,
+    private _store: Store<fromRoot.IState>
+  ) {
+    this._subscription = [];
     this.sidenavToggle = new EventEmitter();
   }
 
   // Life-cycle hooks
   public ngOnInit(): void {
-    this._subscription = this._authService.authChange.subscribe((authStatus: boolean) => {
-      this.loggedUser = this._authService.loggedUser;
-      this.isAuth = authStatus;
-    });
+    this.isAuth$ = this._store.select(fromRoot.GET_IS_AUTHENTICATED);
+    this._subscription.push(this._authService.loggedUser.subscribe((userName: string) => {
+      this.loggedUser = userName;
+    }));
   }
 
   public ngOnDestroy(): void {
-    if (this._subscription) {
-      this._subscription.unsubscribe();
-    }
+    this._subscription.forEach((subscription: Subscription) => {
+      subscription.unsubscribe();
+    });
   }
 
   // Methods

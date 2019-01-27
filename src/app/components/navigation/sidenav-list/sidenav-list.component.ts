@@ -1,3 +1,4 @@
+import { Store } from '@ngrx/store';
 import {
   Component,
   OnInit,
@@ -5,9 +6,11 @@ import {
   EventEmitter,
   OnDestroy
 } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import { AuthService } from 'src/app/services/auth.service';
+import { AppReducer as fromRoot } from '../../../reducers/app.reducer';
+
 
 @Component({
   selector: 'fg-sidenav-list',
@@ -17,29 +20,33 @@ import { AuthService } from 'src/app/services/auth.service';
 export class SidenavListComponent implements OnInit, OnDestroy {
 
   // Properties
-  private _subscription: Subscription;
+  private _subscription: Array<Subscription>;
   @Output() public closeSidenav: EventEmitter<void>;
-  public isAuth: boolean;
+  public isAuth$: Observable<boolean>;
   public loggedUser: string;
 
   // Class Constructor
-  constructor(private _authService: AuthService) {
+  constructor(
+    private _authService: AuthService,
+    private _store: Store<fromRoot.IState>
+  ) {
+    this._subscription = [];
     this.closeSidenav = new EventEmitter();
-    this.isAuth = false;
   }
 
   // Life-cycle hooks
   ngOnInit() {
-    this._subscription = this._authService.authChange.subscribe((authStatus: boolean) => {
-      this.loggedUser = this._authService.loggedUser;
-      this.isAuth = authStatus;
-    });
+    this.isAuth$ = this._store.select(fromRoot.GET_IS_AUTHENTICATED);
+    this._subscription.push(this._authService.loggedUser.subscribe((userName: string) => {
+      this.loggedUser = userName;
+      console.log(userName);
+    }));
   }
 
   public ngOnDestroy(): void {
-    if (this._subscription) {
-      this._subscription.unsubscribe();
-    }
+    this._subscription.forEach((subscription: Subscription) => {
+      subscription.unsubscribe();
+    });
   }
 
   // Methods

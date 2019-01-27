@@ -1,7 +1,7 @@
+import { Subject } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/auth';
 
 import { IAuthDataModel } from './../models/auth-data.model';
@@ -9,6 +9,7 @@ import { TrainingService } from './training.service';
 import { UserInterfaceService } from 'src/app/services/user-interface.service';
 import { AppReducer as fromRoot } from '../reducers/app.reducer';
 import { UserInterfaceActions as UserInterface} from '../reducers/user-interface.actions';
+import { AuthActions as Auth } from '../reducers/auth.actions';
 
 
 @Injectable({
@@ -17,15 +18,7 @@ import { UserInterfaceActions as UserInterface} from '../reducers/user-interface
 export class AuthService {
 
   // Properties
-  private _isAuth: boolean;
-  private _loggedUser: string;
-  public get loggedUser(): string {
-    return this._loggedUser;
-  }
-  public get isAuth(): boolean { // used in auth-guard service
-    return this._isAuth;
-  }
-  public authChange: Subject<boolean>; // used in navigation subscript and header to toggle menu
+  public loggedUser: Subject<string>;
 
   // The constructor
   constructor(
@@ -35,22 +28,18 @@ export class AuthService {
       private _userInterfaceService: UserInterfaceService,
       private _store: Store<fromRoot.IState>
   ) {
-    this.authChange = new Subject();
-    this._isAuth = false;
+    this.loggedUser = new Subject();
   }
 
   // Methods
-  private _authSuccessfully(token: boolean = true): void {
-    this._isAuth = token;
-    this.authChange.next(token);
+  private _authSuccessfully(token: boolean): void {
     this._router.navigate([token ? '/training' : '/']);
   }
 
   public initAuthListener(): void {
     this._angularFireAuth.authState.subscribe((user: any) => {
-      this._loggedUser = (user) ? user.email : '';
-      
-
+      this.loggedUser.next((user) ? user.email : '');
+      this._authSuccessfully(user != null);
       this._store.dispatch((user) ? new Auth.SetAuthenticated() : new Auth.SetUnauthenticated);
       if (!user) {
         this._trainingService.cancelSubscriptions();
