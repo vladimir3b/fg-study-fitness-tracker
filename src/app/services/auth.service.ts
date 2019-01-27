@@ -49,7 +49,9 @@ export class AuthService {
   public initAuthListener(): void {
     this._angularFireAuth.authState.subscribe((user: any) => {
       this._loggedUser = (user) ? user.email : '';
-      this._authSuccessfully(user != null);
+      
+
+      this._store.dispatch((user) ? new Auth.SetAuthenticated() : new Auth.SetUnauthenticated);
       if (!user) {
         this._trainingService.cancelSubscriptions();
       }
